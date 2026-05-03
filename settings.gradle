@@ -1,0 +1,5 @@
+rootProject.name = 'cart-cache-comparison'
+
+include 'common'
+include 'cart-state-server'
+include 'cart-display-server'
