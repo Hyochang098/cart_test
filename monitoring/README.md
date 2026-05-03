@@ -30,10 +30,14 @@ docker compose up -d
 
 ## 3) 대시보드
 
-Grafana에 접속하면 `Cart Comparison/Cart Servers Comparison Overview` 대시보드가 자동 등록됩니다.
+Grafana에 접속하면 `Cart Comparison` 폴더에 대시보드 3개가 자동 등록됩니다.
 
-포함 항목:
+- `Cart Servers Comparison Overview` — 두 서버 비교용
+- `Cart State Server (28080)` — state 서버 단독 (스냅샷용)
+- `Cart Display Server (28081)` — display 서버 단독 (스냅샷용)
+
+각 대시보드 포함 항목:
 - `GET /api/v1/carts/me` RPS
-- `GET /api/v1/carts/me` P95
+- `GET /api/v1/carts/me` Latency (p95, p99)
 - 5xx 에러 비율
-- JVM Heap 사용량
+- JVM Heap (used, max)
