@@ -1,9 +1,48 @@
-version: "3.8"
-
 services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: cart-redis
+    ports:
+      - "16379:6379"
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.63.0
+    container_name: cart-redis-exporter
+    depends_on:
+      - redis
+    ports:
+      - "19121:9121"
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: cart-postgres
+    environment:
+      - POSTGRES_DB=cartdb
+      - POSTGRES_USER=cart
+      - POSTGRES_PASSWORD=cart
+    ports:
+      - "15432:5432"
+    volumes:
+      - cart-postgres-data:/var/lib/postgresql/data
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: cart-postgres-exporter
+    depends_on:
+      - postgres
+    ports:
+      - "19187:9187"
+    environment:
+      - DATA_SOURCE_NAME=postgresql://cart:cart@postgres:5432/cartdb?sslmode=disable
+
   prometheus:
     image: prom/prometheus:v2.54.1
     container_name: cart-prometheus
+    depends_on:
+      - redis-exporter
+      - postgres-exporter
     ports:
       - "19090:9090"
     volumes:
@@ -25,3 +64,6 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+volumes:
+  cart-postgres-data:

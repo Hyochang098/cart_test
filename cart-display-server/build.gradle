@@ -9,5 +9,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.postgresql:postgresql'
 }

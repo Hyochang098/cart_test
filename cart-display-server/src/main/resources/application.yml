@@ -5,18 +5,28 @@ spring:
   application:
     name: cart-display-server
   datasource:
-    url: jdbc:h2:mem:cartdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DB_URL:jdbc:postgresql://localhost:15432/cartdb}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:cart}
+    password: ${DB_PASSWORD:cart}
+    hikari:
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:20}
+      minimum-idle: ${DB_MIN_IDLE:5}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:3000}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:16379}
+      password: ${REDIS_PASSWORD:}
+      timeout: ${REDIS_TIMEOUT_MS:3000ms}
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     open-in-view: false
     show-sql: false
-  h2:
-    console:
-      enabled: true
+    properties:
+      hibernate:
+        generate_statistics: true
 
 management:
   endpoints:
@@ -34,3 +44,8 @@ management:
         http.server.requests: true
       slo:
         http.server.requests: 50ms,100ms,200ms,300ms,500ms,1s,2s
+
+logging:
+  level:
+    org.hibernate.stat: warn
+    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: error
